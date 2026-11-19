@@ -1,0 +1,134 @@
+# Builds a complete dsh-go APK on a Linux runner: the bundled runtime
+# (runtime/out/<abi>, which only builds on x86_64 Linux) plus the Flutter APK
+# that packages it.
+#
+#   gh workflow run build-apk.yml --ref main -f flavor=arm64
+#   gh run download <run-id> -n dsh-go-apk-arm64 -D out
+#
+# This complements runtime.yml (runtime only, for carrying a matching runtime
+# into a local build) and docs/release.md (the signed release flow).
+name: Build APK
+
+on:
+  # The first run fires when this file lands on a branch, so the workflow is
+  # usable before it reaches the default branch.
+  push:
+    paths: ['.github/workflows/build-apk.yml']
+  workflow_dispatch:
+    inputs:
+      flavor:
+        description: 'ABI flavor to build'
+        type: choice
+        options: [arm64, x64]
+        default: arm64
+      build_name:
+        description: 'versionName override (empty = app/pubspec.yaml)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-apk-${{ github.ref }}-${{ inputs.flavor }}
+  cancel-in-progress: true
+
+env:
+  FLUTTER_VERSION: 3.47.7
+  TZ: Asia/Shanghai
+  # The Aliyun mirrors are slow and unreliable from a US runner.
+  DSH_MAVEN_MIRRORS: 0
+  # Public build: never embed the beta channel token.
+  DSH_BETA_TOKEN_FILE: ''
+  # Must match flutter.ndkVersion in the pinned Flutter SDK.
+  NDK_VERSION: 28.2.13676358
+
+jobs:
+  apk:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      # bash, git, curl, tar, unzip, xz, python3, zstd, file, and gpgv are what
+      # runtime/build-runtime.sh needs on top of the runner image.
+      - name: Install runtime build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends zstd xz-utils file gpgv
+
+      # Downloads are verified by hash on every run, so a stale cache is harmless.
+      - name: Restore the download cache
+        id: cache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: runtime/.cache
+          key: runtime-downloads-v1-${{ hashFiles('runtime/build-runtime.sh', 'runtime/locks/**') }}
+          restore-keys: runtime-downloads-v1-
+
+      - name: Build the bundled runtime
+        run: |
+          case "${{ inputs.flavor }}" in
+            arm64) runtime/build-runtime.sh arm64-v8a ;;
+            x64) runtime/build-runtime.sh x86_64 ;;
+            *) echo "unknown flavor: ${{ inputs.flavor }}" >&2; exit 1 ;;
+          esac
+
+      - name: Save the download cache
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: runtime/.cache
+          key: ${{ steps.cache.outputs.cache-primary-key }}
+
+      - name: Flutter plugins and local.properties
+        working-directory: app
+        run: |
+          flutter pub get --enforce-lockfile
+          printf 'sdk.dir=%s\nflutter.sdk=%s\n' "$ANDROID_HOME" "$FLUTTER_ROOT" > android/local.properties
+
+      # Gradle needs the NDK for the pinned ndkVersion even though no native code
+      # is compiled here; the runner image does not ship this exact version.
+      - name: Android NDK ${{ env.NDK_VERSION }}
+        run: |
+          if [ ! -d "$ANDROID_HOME/ndk/$NDK_VERSION" ]; then
+            yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install "ndk;$NDK_VERSION"
+          fi
+
+      - name: Build the APK
+        run: |
+          args=(-f "${{ inputs.flavor }}" --keep-daemon)
+          if [ -n "${{ inputs.build_name }}" ]; then
+            args+=(--build-name "${{ inputs.build_name }}")
+          fi
+          bash tooling/build-apk.sh "${args[@]}"
+
+      - name: Report the artifact
+        run: |
+          apk=$(ls -1 app/build/app/outputs/flutter-apk/*.apk | head -n 1)
+          echo "artifact: $apk"
+          ls -lh "$apk"
+          sha256sum "$apk"
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: dsh-go-apk-${{ inputs.flavor }}
+          path: |
+            app/build/app/outputs/flutter-apk/*.apk
+            app/build/app/outputs/flutter-apk/*.sha1
+          retention-days: 14
+          if-no-files-found: error
