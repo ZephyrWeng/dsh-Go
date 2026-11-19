@@ -106,7 +106,11 @@ class WakeWordDownloadStore {
 
       progress?.call(WakeWordDownloadProgress(WakeWordDownloadPhase.verifying, archive.bytes, archive.bytes));
       final part = _part;
-      final digest = await Isolate.run(() async => (await sha256.bind(part.openRead()).first).toString());
+      // Capture only what the worker isolate needs: a closure that reaches for
+      // `this` (via `_part` or `_checkCancelled`) would drag the whole store — and
+      // its `Future` fields, which cannot cross an isolate boundary — along.
+      final partPath = part.path;
+      final digest = await Isolate.run(() async => (await sha256.bind(File(partPath).openRead()).first).toString());
       _checkCancelled();
       if (digest != archive.sha256) {
         await part.delete();
@@ -114,7 +118,8 @@ class WakeWordDownloadStore {
       }
 
       progress?.call(WakeWordDownloadProgress(WakeWordDownloadPhase.unpacking, 0, archive.bytes));
-      await Isolate.run(() => _unpack(part.path, directory.path));
+      final directoryPath = directory.path;
+      await Isolate.run(() => _unpack(partPath, directoryPath));
       _checkCancelled();
       await part.delete();
 
