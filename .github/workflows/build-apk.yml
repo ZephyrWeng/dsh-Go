@@ -143,14 +143,18 @@ jobs:
             echo "no signing secrets; this build falls back to the debug key"
             exit 0
           fi
-          mkdir -p app/android/keystore
-          printf '%s' "$KEYSTORE_BASE64" | base64 -d > app/android/keystore/dsh-fork.jks
+          # storeFile is resolved against the module directory (app/android/app),
+          # not the root project: putting the keystore anywhere else makes Gradle
+          # fail at :app:validateSigningArm64Release.
+          mkdir -p app/android/app/keystore
+          printf '%s' "$KEYSTORE_BASE64" | base64 -d > app/android/app/keystore/dsh-fork.jks
           cat > app/android/key.properties <<EOF
           storeFile=keystore/dsh-fork.jks
           storePassword=$KEYSTORE_PASSWORD
           keyAlias=$KEY_ALIAS
           keyPassword=$KEY_PASSWORD
           EOF
+          ls -l app/android/app/keystore/dsh-fork.jks
           echo "signing with key alias $KEY_ALIAS"
 
       # Installs beside the official app instead of trying to replace it: a fork
