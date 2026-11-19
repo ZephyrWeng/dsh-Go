@@ -132,6 +132,14 @@ class VoicePlugin :
                 releaseAll()
                 result.success(null)
             }
+            "wakeStart" -> {
+                WakeWordService.start(appContext)
+                result.success(null)
+            }
+            "wakeStop" -> {
+                WakeWordService.stop(appContext)
+                result.success(null)
+            }
             else -> result.notImplemented()
         }
     }

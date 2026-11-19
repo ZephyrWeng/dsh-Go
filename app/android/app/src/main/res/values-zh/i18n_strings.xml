@@ -309,4 +309,9 @@
     <string name="background_keep_save_failed">未能保存通道保持设置，请在重启 App 前确认。</string>
     <string name="background_viewport_invalid">未知的后台视口预设</string>
     <string name="background_viewport_save_failed">无法保存后台视口设置。</string>
+    <string name="wake_word_listening_channel">唤醒词</string>
+    <string name="wake_word_listening_channel_description">App 在后台时监听唤醒词</string>
+    <string name="wake_word_listening_title">正在监听唤醒词</string>
+    <string name="wake_word_listening_text">说出唤醒词即可开始免手持对话</string>
+    <string name="wake_word_stop">停止监听</string>
 </resources>
