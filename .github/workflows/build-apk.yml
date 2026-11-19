@@ -47,6 +47,10 @@ jobs:
   apk:
     runs-on: ubuntu-24.04
     timeout-minutes: 120
+    env:
+      # A push run carries no inputs, so fall back to the ARMv8 phone build.
+      FLAVOR: ${{ inputs.flavor || 'arm64' }}
+      BUILD_NAME: ${{ inputs.build_name }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -82,10 +86,11 @@ jobs:
 
       - name: Build the bundled runtime
         run: |
-          case "${{ inputs.flavor }}" in
+          echo "flavor: $FLAVOR"
+          case "$FLAVOR" in
             arm64) runtime/build-runtime.sh arm64-v8a ;;
             x64) runtime/build-runtime.sh x86_64 ;;
-            *) echo "unknown flavor: ${{ inputs.flavor }}" >&2; exit 1 ;;
+            *) echo "unknown flavor: $FLAVOR" >&2; exit 1 ;;
           esac
 
       - name: Save the download cache
@@ -111,9 +116,9 @@ jobs:
 
       - name: Build the APK
         run: |
-          args=(-f "${{ inputs.flavor }}" --keep-daemon)
-          if [ -n "${{ inputs.build_name }}" ]; then
-            args+=(--build-name "${{ inputs.build_name }}")
+          args=(-f "$FLAVOR" --keep-daemon)
+          if [ -n "$BUILD_NAME" ]; then
+            args+=(--build-name "$BUILD_NAME")
           fi
           bash tooling/build-apk.sh "${args[@]}"
 
@@ -126,7 +131,7 @@ jobs:
 
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: dsh-go-apk-${{ inputs.flavor }}
+          name: dsh-go-apk-${{ inputs.flavor || 'arm64' }}
           path: |
             app/build/app/outputs/flutter-apk/*.apk
             app/build/app/outputs/flutter-apk/*.sha1
