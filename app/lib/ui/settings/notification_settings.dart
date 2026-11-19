@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/l10n.dart';
 import '../../runtime/runtime_state.dart';
 import '../../state/android_features.dart';
 import '../../state/live_activity_state.dart';
+import '../../state/notification_relay_state.dart';
 import '../../state/notify_state.dart';
 import '../phone/phone_widgets.dart';
 import '../shell/page_frame.dart';
@@ -26,6 +28,8 @@ mixin _RefreshOnResume<T extends ConsumerStatefulWidget> on ConsumerState<T> {
       onResume: () {
         ref.invalidate(notifySystemStatusProvider);
         ref.invalidate(liveSystemStatusProvider);
+        // 通知使用权 may have just been granted or revoked there.
+        ref.invalidate(notificationRelayStatusProvider);
         // 实时活动 may have just been allowed there: offer the running activity
         // again (the native side posts nothing new if it already shows it).
         unawaited(ref.read(notifyChannelProvider).live(ref.read(livePushProvider)));
@@ -197,6 +201,8 @@ class _NotificationSettingsPageState extends ConsumerState<NotificationSettingsP
     // Unknown until the phone answers: no 「不支持」 flashing up meanwhile.
     final live = ref.watch(liveSystemStatusProvider).value;
     final ohos = ref.watch(operatingSystemProvider) == 'ohos';
+    // Null where the native side has no relay (iOS, desktop): nothing to show.
+    final relay = ref.watch(notificationRelayStatusProvider).value;
     // HarmonyOS has no live card in this build, only a plain progress notification.
     // A read that failed says nothing about whether it has one: the switch stays as it is.
     final liveSupported = ohos ? (live == null || live.readFailed || live.ordinaryFallback) : (live?.supported ?? true);
@@ -295,6 +301,100 @@ class _NotificationSettingsPageState extends ConsumerState<NotificationSettingsP
             ),
           ],
         ),
+        // Android only: 通知使用权 is an Android setting and the relay is an
+        // Android service. Reading other apps' notifications is the opposite
+        // direction from the sections above, which post this app's own.
+        if (!ohos && !wordsForIos && relay != null) _relaySection(l10n, relay),
+      ],
+    );
+  }
+
+  /// The other direction: this phone's notifications, forwarded to a plugin.
+  Widget _relaySection(L10n l10n, NotificationRelayStatus relay) => SettingsSection(
+    title: l10n.notifyRelaySection,
+    footer: Text(l10n.notifyRelayFooter(relay.port)),
+    children: [
+      SettingsSwitchTile(
+        title: l10n.notifyRelaySwitch,
+        subtitle: relay.forwarding ? null : l10n.notifyRelaySwitchOffHint,
+        value: relay.enabled,
+        onChanged: (v) => unawaited(ref.read(notificationRelayControllerProvider).setEnabled(v)),
+      ),
+      SettingsTile(
+        title: l10n.notifyRelayGrant,
+        subtitle: relay.granted ? l10n.notifyRelayGranted : l10n.notifyRelayNotGranted,
+        onTap: () => unawaited(ref.read(notificationRelayControllerProvider).openSettings()),
+      ),
+      SettingsTile(
+        title: l10n.notifyRelayPort,
+        subtitle: l10n.notifyRelayPortHint,
+        value: Text('${relay.port}'),
+        onTap: () => unawaited(_editRelayPort(relay.port)),
+      ),
+      if (relay.last.isNotEmpty) SettingsTile(title: l10n.notifyRelayLast, subtitle: relay.last),
+    ],
+  );
+
+  Future<void> _editRelayPort(int current) async {
+    final l10n = appL10n;
+    final controller = ref.read(notificationRelayControllerProvider);
+    final value = await showDialog<int>(
+      context: context,
+      builder: (context) => _PortDialog(initial: current, l10n: l10n),
+    );
+    if (value == null || value == current) return;
+    try {
+      await controller.setPort(value);
+    } on PlatformException {
+      if (mounted) _settingsFailed();
+    }
+  }
+}
+
+/// 1024–65535: below 1024 needs root, and nothing else is a valid port.
+class _PortDialog extends StatefulWidget {
+  const _PortDialog({required this.initial, required this.l10n});
+
+  final int initial;
+  final L10n l10n;
+
+  @override
+  State<_PortDialog> createState() => _PortDialogState();
+}
+
+class _PortDialogState extends State<_PortDialog> {
+  late final _controller = TextEditingController(text: '${widget.initial}');
+  String? _error;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    final port = int.tryParse(_controller.text.trim());
+    if (port == null || port < 1024 || port > 65535) {
+      setState(() => _error = widget.l10n.notifyRelayPortInvalid);
+      return;
+    }
+    Navigator.of(context).pop(port);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = widget.l10n;
+    return AlertDialog(
+      title: Text(l10n.notifyRelayPort),
+      content: TextField(
+        controller: _controller,
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(labelText: l10n.notifyRelayPort, errorText: _error),
+        onSubmitted: (_) => _submit(),
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.commonCancel)),
+        FilledButton(onPressed: _submit, child: Text(l10n.commonDone)),
       ],
     );
   }

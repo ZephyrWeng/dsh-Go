@@ -1,0 +1,21 @@
+{
+  "notifyRelaySection": "通知转发",
+  "notifyRelayFooter": "把手机上其他应用的通知转发到 http://127.0.0.1:{port}/notify，交给你自己写的插件处理。只在授予「通知使用权」后才生效，转发范围仅限本机。",
+  "@notifyRelayFooter": {
+    "placeholders": {
+      "port": {
+        "type": "int"
+      }
+    }
+  },
+  "notifyRelaySwitch": "转发其他应用的通知",
+  "notifyRelaySwitchOffHint": "关闭后不再转发",
+  "notifyRelayGrant": "通知使用权",
+  "notifyRelayGranted": "已授予",
+  "notifyRelayNotGranted": "未授予，点此前往系统设置",
+  "notifyRelayPort": "转发端口",
+  "notifyRelayPortHint": "插件在这里等着接收，默认 38017",
+  "notifyRelayPortInvalid": "端口要在 1024–65535 之间",
+  "notifyRelayLast": "最近一次",
+  "notifyRelayUnsupported": "当前平台不支持通知转发"
+}

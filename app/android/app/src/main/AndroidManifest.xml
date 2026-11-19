@@ -273,6 +273,19 @@
             android:exported="false"
             android:foregroundServiceType="microphone" />
 
+        <!-- Forwards this phone's notifications to a local endpoint for a plugin
+             (notify/NotificationRelayService.kt). The system binds it only after the
+             person grants 通知使用权; the forwarded text is what each app posted. -->
+        <service
+            android:name=".notify.NotificationRelayService"
+            android:exported="true"
+            android:label="@string/notify_relay_service"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
         <!-- 手机操控: reads and drives the main screen, owns the status bar / confirm overlay (phone/a11y). -->
         <service
             android:name=".phone.a11y.PhoneA11yService"

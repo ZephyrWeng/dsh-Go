@@ -321,4 +321,5 @@
     <string name="wake_word_listening_title">Listening for the wake word</string>
     <string name="wake_word_listening_text">Say the wake word to start a hands-free conversation</string>
     <string name="wake_word_stop">Stop listening</string>
+    <string name="notify_relay_service">Notification relay</string>
 </resources>

@@ -20426,6 +20426,78 @@ abstract class L10n {
   /// **'更换'**
   String get nearbyChange;
 
+  /// No description provided for @notifyRelaySection.
+  ///
+  /// In zh, this message translates to:
+  /// **'通知转发'**
+  String get notifyRelaySection;
+
+  /// No description provided for @notifyRelayFooter.
+  ///
+  /// In zh, this message translates to:
+  /// **'把手机上其他应用的通知转发到 http://127.0.0.1:{port}/notify，交给你自己写的插件处理。只在授予「通知使用权」后才生效，转发范围仅限本机。'**
+  String notifyRelayFooter(int port);
+
+  /// No description provided for @notifyRelaySwitch.
+  ///
+  /// In zh, this message translates to:
+  /// **'转发其他应用的通知'**
+  String get notifyRelaySwitch;
+
+  /// No description provided for @notifyRelaySwitchOffHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'关闭后不再转发'**
+  String get notifyRelaySwitchOffHint;
+
+  /// No description provided for @notifyRelayGrant.
+  ///
+  /// In zh, this message translates to:
+  /// **'通知使用权'**
+  String get notifyRelayGrant;
+
+  /// No description provided for @notifyRelayGranted.
+  ///
+  /// In zh, this message translates to:
+  /// **'已授予'**
+  String get notifyRelayGranted;
+
+  /// No description provided for @notifyRelayNotGranted.
+  ///
+  /// In zh, this message translates to:
+  /// **'未授予，点此前往系统设置'**
+  String get notifyRelayNotGranted;
+
+  /// No description provided for @notifyRelayPort.
+  ///
+  /// In zh, this message translates to:
+  /// **'转发端口'**
+  String get notifyRelayPort;
+
+  /// No description provided for @notifyRelayPortHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'插件在这里等着接收，默认 38017'**
+  String get notifyRelayPortHint;
+
+  /// No description provided for @notifyRelayPortInvalid.
+  ///
+  /// In zh, this message translates to:
+  /// **'端口要在 1024–65535 之间'**
+  String get notifyRelayPortInvalid;
+
+  /// No description provided for @notifyRelayLast.
+  ///
+  /// In zh, this message translates to:
+  /// **'最近一次'**
+  String get notifyRelayLast;
+
+  /// No description provided for @notifyRelayUnsupported.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前平台不支持通知转发'**
+  String get notifyRelayUnsupported;
+
   /// No description provided for @performanceTitle.
   ///
   /// In zh, this message translates to:

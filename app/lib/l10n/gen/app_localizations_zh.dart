@@ -11000,6 +11000,44 @@ class L10nZh extends L10n {
   String get nearbyChange => '更换';
 
   @override
+  String get notifyRelaySection => '通知转发';
+
+  @override
+  String notifyRelayFooter(int port) {
+    return '把手机上其他应用的通知转发到 http://127.0.0.1:$port/notify，交给你自己写的插件处理。只在授予「通知使用权」后才生效，转发范围仅限本机。';
+  }
+
+  @override
+  String get notifyRelaySwitch => '转发其他应用的通知';
+
+  @override
+  String get notifyRelaySwitchOffHint => '关闭后不再转发';
+
+  @override
+  String get notifyRelayGrant => '通知使用权';
+
+  @override
+  String get notifyRelayGranted => '已授予';
+
+  @override
+  String get notifyRelayNotGranted => '未授予，点此前往系统设置';
+
+  @override
+  String get notifyRelayPort => '转发端口';
+
+  @override
+  String get notifyRelayPortHint => '插件在这里等着接收，默认 38017';
+
+  @override
+  String get notifyRelayPortInvalid => '端口要在 1024–65535 之间';
+
+  @override
+  String get notifyRelayLast => '最近一次';
+
+  @override
+  String get notifyRelayUnsupported => '当前平台不支持通知转发';
+
+  @override
   String get performanceTitle => '性能';
 
   @override

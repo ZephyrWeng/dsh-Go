@@ -314,4 +314,5 @@
     <string name="wake_word_listening_title">正在监听唤醒词</string>
     <string name="wake_word_listening_text">说出唤醒词即可开始免手持对话</string>
     <string name="wake_word_stop">停止监听</string>
+    <string name="notify_relay_service">通知转发</string>
 </resources>

@@ -72,6 +72,12 @@ class MainActivity : FlutterActivity() {
             engine.plugins.add(io.github.ccch1mneyyy.dsh_app.companion.CompanionVoicePlugin())
             engine.plugins.add(io.github.ccch1mneyyy.dsh_app.speech.SpeechPlugin())
             engine.plugins.add(io.github.ccch1mneyyy.dsh_app.companion.CompanionWidgetPlugin())
+            // Not a FlutterPlugin: the notification relay only needs its channel, and the
+            // listener service itself is bound by the system, not by this engine.
+            io.github.ccch1mneyyy.dsh_app.notify.NotificationRelayPlugin.register(
+                engine.dartExecutor.binaryMessenger,
+                applicationContext,
+            )
             engine.dartExecutor.executeDartEntrypoint(DartExecutor.DartEntrypoint.createDefault())
             cache.put(ENGINE_ID, engine)
         }

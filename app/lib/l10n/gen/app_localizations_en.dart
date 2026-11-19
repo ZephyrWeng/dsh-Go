@@ -11593,6 +11593,44 @@ class L10nEn extends L10n {
   String get nearbyChange => 'Change';
 
   @override
+  String get notifyRelaySection => 'Notification relay';
+
+  @override
+  String notifyRelayFooter(int port) {
+    return 'Forwards other apps\' notifications to http://127.0.0.1:$port/notify, for a plugin of your own to act on. It runs only after you grant notification access, and forwards to this phone only.';
+  }
+
+  @override
+  String get notifyRelaySwitch => 'Forward other apps\' notifications';
+
+  @override
+  String get notifyRelaySwitchOffHint => 'Nothing is forwarded while this is off';
+
+  @override
+  String get notifyRelayGrant => 'Notification access';
+
+  @override
+  String get notifyRelayGranted => 'Granted';
+
+  @override
+  String get notifyRelayNotGranted => 'Not granted — tap to open the system setting';
+
+  @override
+  String get notifyRelayPort => 'Port';
+
+  @override
+  String get notifyRelayPortHint => 'Where your plugin listens; 38017 by default';
+
+  @override
+  String get notifyRelayPortInvalid => 'The port must be 1024–65535';
+
+  @override
+  String get notifyRelayLast => 'Last';
+
+  @override
+  String get notifyRelayUnsupported => 'Notification relay is not available on this platform';
+
+  @override
   String get performanceTitle => 'Performance';
 
   @override
