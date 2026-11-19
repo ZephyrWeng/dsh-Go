@@ -9,6 +9,7 @@
 // not reported twice for one utterance); stopping it is the caller's call.
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:typed_data';
@@ -317,6 +318,13 @@ class _SherpaSpotter implements WakeWordSpotter {
           debug: false,
         ),
         keywordsFile: '',
+        // The spotter validates its own config when it is created, before any
+        // stream exists: with an empty buffer here it refuses outright
+        // ("Please provide either a keywords-file or the keywords-buf") and no
+        // stream is ever made, so nothing could wake. The size is the UTF-8
+        // byte count, not the character count — the phrase is Chinese.
+        keywordsBuf: keywords,
+        keywordsBufSize: utf8.encode(keywords).length,
         keywordsScore: 1.0,
         keywordsThreshold: 0.25,
         maxActivePaths: 4,
