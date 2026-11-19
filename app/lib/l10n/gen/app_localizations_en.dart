@@ -27630,6 +27630,95 @@ class L10nEn extends L10n {
   }
 
   @override
+  String get wakeWordSection => 'Wake word';
+
+  @override
+  String get wakeWordEnable => 'Voice wake-up';
+
+  @override
+  String wakeWordEnableHint(String phrase) {
+    return 'Say “$phrase” to wake it up, then just talk';
+  }
+
+  @override
+  String get wakeWordEnableOffHint => 'While off, the microphone is not listened to';
+
+  @override
+  String get wakeWordPhrase => 'Wake word';
+
+  @override
+  String get wakeWordPhraseHint => '2–4 Chinese characters';
+
+  @override
+  String get wakeWordPhraseInvalidLength => 'A wake word is 2–4 Chinese characters';
+
+  @override
+  String wakeWordPhraseInvalidScript(String char) {
+    return 'Chinese characters only — “$char” cannot be used';
+  }
+
+  @override
+  String wakeWordPhraseUnsupported(String syllable) {
+    return 'The model cannot say this word ($syllable); try another';
+  }
+
+  @override
+  String get wakeWordPhraseSaved => 'Saved';
+
+  @override
+  String get wakeWordModel => 'Wake model';
+
+  @override
+  String get wakeWordModelSize => 'About 31 MB, downloaded once';
+
+  @override
+  String get wakeWordModelReady => 'Ready';
+
+  @override
+  String get wakeWordModelDownload => 'Download';
+
+  @override
+  String wakeWordModelDownloading(int percent) {
+    return 'Downloading $percent%';
+  }
+
+  @override
+  String get wakeWordModelUnpacking => 'Unpacking…';
+
+  @override
+  String wakeWordModelFailed(String reason) {
+    return 'Download failed: $reason';
+  }
+
+  @override
+  String get wakeWordModelDelete => 'Delete model';
+
+  @override
+  String get wakeWordTest => 'Try it';
+
+  @override
+  String wakeWordTestListening(String phrase) {
+    return 'Listening — say “$phrase”';
+  }
+
+  @override
+  String wakeWordTestHeard(String phrase) {
+    return 'Heard: $phrase';
+  }
+
+  @override
+  String get wakeWordTestMissed => 'Nothing heard; try again';
+
+  @override
+  String get wakeWordTestNeedModel => 'Download the wake model first';
+
+  @override
+  String get wakeWordMicDenied => 'Microphone permission is off — turn it on in system settings';
+
+  @override
+  String get wakeWordPresets => 'Suggested words';
+
+  @override
   String get wallpaperTitle => 'Wallpaper';
 
   @override

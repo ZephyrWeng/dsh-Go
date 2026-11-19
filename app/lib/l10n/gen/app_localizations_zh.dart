@@ -26205,6 +26205,95 @@ class L10nZh extends L10n {
   }
 
   @override
+  String get wakeWordSection => '唤醒词';
+
+  @override
+  String get wakeWordEnable => '语音唤醒';
+
+  @override
+  String wakeWordEnableHint(String phrase) {
+    return '说「$phrase」叫醒它，然后直接说话';
+  }
+
+  @override
+  String get wakeWordEnableOffHint => '关闭后不再监听麦克风';
+
+  @override
+  String get wakeWordPhrase => '唤醒词';
+
+  @override
+  String get wakeWordPhraseHint => '2–4 个汉字';
+
+  @override
+  String get wakeWordPhraseInvalidLength => '唤醒词要 2–4 个汉字';
+
+  @override
+  String wakeWordPhraseInvalidScript(String char) {
+    return '只能用汉字，「$char」不行';
+  }
+
+  @override
+  String wakeWordPhraseUnsupported(String syllable) {
+    return '这个词模型读不出来（$syllable），换一个试试';
+  }
+
+  @override
+  String get wakeWordPhraseSaved => '已保存';
+
+  @override
+  String get wakeWordModel => '唤醒模型';
+
+  @override
+  String get wakeWordModelSize => '约 31 MB，只下一次';
+
+  @override
+  String get wakeWordModelReady => '已就绪';
+
+  @override
+  String get wakeWordModelDownload => '下载';
+
+  @override
+  String wakeWordModelDownloading(int percent) {
+    return '下载中 $percent%';
+  }
+
+  @override
+  String get wakeWordModelUnpacking => '正在解压…';
+
+  @override
+  String wakeWordModelFailed(String reason) {
+    return '下载失败：$reason';
+  }
+
+  @override
+  String get wakeWordModelDelete => '删除模型';
+
+  @override
+  String get wakeWordTest => '试一下';
+
+  @override
+  String wakeWordTestListening(String phrase) {
+    return '正在听，请说「$phrase」';
+  }
+
+  @override
+  String wakeWordTestHeard(String phrase) {
+    return '听到了：$phrase';
+  }
+
+  @override
+  String get wakeWordTestMissed => '没听到，再试一次';
+
+  @override
+  String get wakeWordTestNeedModel => '先下载唤醒模型';
+
+  @override
+  String get wakeWordMicDenied => '没有麦克风权限，去系统设置里打开';
+
+  @override
+  String get wakeWordPresets => '常用唤醒词';
+
+  @override
   String get wallpaperTitle => '壁纸';
 
   @override

@@ -47780,6 +47780,156 @@ abstract class L10n {
   /// **'{count} 条规则'**
   String voiceScribeHotwordRules(int count);
 
+  /// No description provided for @wakeWordSection.
+  ///
+  /// In zh, this message translates to:
+  /// **'唤醒词'**
+  String get wakeWordSection;
+
+  /// No description provided for @wakeWordEnable.
+  ///
+  /// In zh, this message translates to:
+  /// **'语音唤醒'**
+  String get wakeWordEnable;
+
+  /// No description provided for @wakeWordEnableHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'说「{phrase}」叫醒它，然后直接说话'**
+  String wakeWordEnableHint(String phrase);
+
+  /// No description provided for @wakeWordEnableOffHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'关闭后不再监听麦克风'**
+  String get wakeWordEnableOffHint;
+
+  /// No description provided for @wakeWordPhrase.
+  ///
+  /// In zh, this message translates to:
+  /// **'唤醒词'**
+  String get wakeWordPhrase;
+
+  /// No description provided for @wakeWordPhraseHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'2–4 个汉字'**
+  String get wakeWordPhraseHint;
+
+  /// No description provided for @wakeWordPhraseInvalidLength.
+  ///
+  /// In zh, this message translates to:
+  /// **'唤醒词要 2–4 个汉字'**
+  String get wakeWordPhraseInvalidLength;
+
+  /// No description provided for @wakeWordPhraseInvalidScript.
+  ///
+  /// In zh, this message translates to:
+  /// **'只能用汉字，「{char}」不行'**
+  String wakeWordPhraseInvalidScript(String char);
+
+  /// No description provided for @wakeWordPhraseUnsupported.
+  ///
+  /// In zh, this message translates to:
+  /// **'这个词模型读不出来（{syllable}），换一个试试'**
+  String wakeWordPhraseUnsupported(String syllable);
+
+  /// No description provided for @wakeWordPhraseSaved.
+  ///
+  /// In zh, this message translates to:
+  /// **'已保存'**
+  String get wakeWordPhraseSaved;
+
+  /// No description provided for @wakeWordModel.
+  ///
+  /// In zh, this message translates to:
+  /// **'唤醒模型'**
+  String get wakeWordModel;
+
+  /// No description provided for @wakeWordModelSize.
+  ///
+  /// In zh, this message translates to:
+  /// **'约 31 MB，只下一次'**
+  String get wakeWordModelSize;
+
+  /// No description provided for @wakeWordModelReady.
+  ///
+  /// In zh, this message translates to:
+  /// **'已就绪'**
+  String get wakeWordModelReady;
+
+  /// No description provided for @wakeWordModelDownload.
+  ///
+  /// In zh, this message translates to:
+  /// **'下载'**
+  String get wakeWordModelDownload;
+
+  /// No description provided for @wakeWordModelDownloading.
+  ///
+  /// In zh, this message translates to:
+  /// **'下载中 {percent}%'**
+  String wakeWordModelDownloading(int percent);
+
+  /// No description provided for @wakeWordModelUnpacking.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在解压…'**
+  String get wakeWordModelUnpacking;
+
+  /// No description provided for @wakeWordModelFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'下载失败：{reason}'**
+  String wakeWordModelFailed(String reason);
+
+  /// No description provided for @wakeWordModelDelete.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除模型'**
+  String get wakeWordModelDelete;
+
+  /// No description provided for @wakeWordTest.
+  ///
+  /// In zh, this message translates to:
+  /// **'试一下'**
+  String get wakeWordTest;
+
+  /// No description provided for @wakeWordTestListening.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在听，请说「{phrase}」'**
+  String wakeWordTestListening(String phrase);
+
+  /// No description provided for @wakeWordTestHeard.
+  ///
+  /// In zh, this message translates to:
+  /// **'听到了：{phrase}'**
+  String wakeWordTestHeard(String phrase);
+
+  /// No description provided for @wakeWordTestMissed.
+  ///
+  /// In zh, this message translates to:
+  /// **'没听到，再试一次'**
+  String get wakeWordTestMissed;
+
+  /// No description provided for @wakeWordTestNeedModel.
+  ///
+  /// In zh, this message translates to:
+  /// **'先下载唤醒模型'**
+  String get wakeWordTestNeedModel;
+
+  /// No description provided for @wakeWordMicDenied.
+  ///
+  /// In zh, this message translates to:
+  /// **'没有麦克风权限，去系统设置里打开'**
+  String get wakeWordMicDenied;
+
+  /// No description provided for @wakeWordPresets.
+  ///
+  /// In zh, this message translates to:
+  /// **'常用唤醒词'**
+  String get wakeWordPresets;
+
   /// No description provided for @wallpaperTitle.
   ///
   /// In zh, this message translates to:

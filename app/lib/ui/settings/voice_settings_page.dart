@@ -21,6 +21,7 @@ import '../shell/page_frame.dart';
 import '../theme/app_icons.dart';
 import '../theme/theme.dart';
 import 'settings_widgets.dart';
+import 'wake_word_section.dart';
 
 String voiceModeLabel(L10n l10n, VoiceMode mode) => switch (mode) {
   VoiceMode.auto => l10n.voiceModeAuto,
@@ -202,6 +203,8 @@ class _VoiceSettingsPageState extends ConsumerState<VoiceSettingsPage> {
             // HarmonyOS captions use its own recognizer: nothing to download.
             children: [ohos ? const SystemAsrCard() : const StreamingAsrModelCard()],
           ),
+        // HarmonyOS has no sherpa engine to run a keyword spotter on.
+        if (!wordsForIos && !ohos) const WakeWordSection(),
         SettingsSection(
           title: l10n.speechCallSection,
           footer: Text(l10n.speechCallFooter),

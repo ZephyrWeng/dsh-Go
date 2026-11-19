@@ -20,6 +20,7 @@ import 'ui/common/side_insets.dart';
 import 'ui/launch/launch_overlay.dart';
 import 'ui/shell/root_gate.dart';
 import 'ui/theme/theme.dart';
+import 'ui/wake_word_listener.dart';
 import 'ui_config/ui_config_state.dart';
 import 'usage/usage_stats.dart';
 
@@ -62,6 +63,8 @@ class _DshAppState extends ConsumerState<DshApp> with WidgetsBindingObserver {
   /// the theme reveal start again from nothing, and a launch screen waiting for its motion to end
   /// never leaves.
   final _layers = GlobalKey(debugLabel: 'app layers');
+  /// The wake word has no page of its own to push from, so it navigates here.
+  final _navigator = GlobalKey<NavigatorState>(debugLabel: 'app navigator');
 
   @override
   void initState() {
@@ -180,6 +183,7 @@ class _DshAppState extends ConsumerState<DshApp> with WidgetsBindingObserver {
     return MaterialApp(
       title: AppInfo.name,
       debugShowCheckedModeBanner: false,
+      navigatorKey: _navigator,
       theme: _light,
       darkTheme: _dark,
       themeMode: themeMode,
@@ -215,6 +219,9 @@ class _DshAppState extends ConsumerState<DshApp> with WidgetsBindingObserver {
                         : MirroredSideInsets(child: child!),
                   ),
                   const LaunchLayer(),
+                  // Renders nothing: keeps the microphone while the switch is
+                  // on, and opens a call when it hears the wake word.
+                  WakeWordListener(navigatorKey: _navigator),
                 ],
               ),
             ),

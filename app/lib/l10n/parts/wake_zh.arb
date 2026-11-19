@@ -1,0 +1,76 @@
+{
+  "wakeWordSection": "唤醒词",
+  "wakeWordEnable": "语音唤醒",
+  "wakeWordEnableHint": "说「{phrase}」叫醒它，然后直接说话",
+  "@wakeWordEnableHint": {
+    "placeholders": {
+      "phrase": {
+        "type": "String"
+      }
+    }
+  },
+  "wakeWordEnableOffHint": "关闭后不再监听麦克风",
+  "wakeWordPhrase": "唤醒词",
+  "wakeWordPhraseHint": "2–4 个汉字",
+  "wakeWordPhraseInvalidLength": "唤醒词要 2–4 个汉字",
+  "wakeWordPhraseInvalidScript": "只能用汉字，「{char}」不行",
+  "@wakeWordPhraseInvalidScript": {
+    "placeholders": {
+      "char": {
+        "type": "String"
+      }
+    }
+  },
+  "wakeWordPhraseUnsupported": "这个词模型读不出来（{syllable}），换一个试试",
+  "@wakeWordPhraseUnsupported": {
+    "placeholders": {
+      "syllable": {
+        "type": "String"
+      }
+    }
+  },
+  "wakeWordPhraseSaved": "已保存",
+  "wakeWordModel": "唤醒模型",
+  "wakeWordModelSize": "约 31 MB，只下一次",
+  "wakeWordModelReady": "已就绪",
+  "wakeWordModelDownload": "下载",
+  "wakeWordModelDownloading": "下载中 {percent}%",
+  "@wakeWordModelDownloading": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "wakeWordModelUnpacking": "正在解压…",
+  "wakeWordModelFailed": "下载失败：{reason}",
+  "@wakeWordModelFailed": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "wakeWordModelDelete": "删除模型",
+  "wakeWordTest": "试一下",
+  "wakeWordTestListening": "正在听，请说「{phrase}」",
+  "@wakeWordTestListening": {
+    "placeholders": {
+      "phrase": {
+        "type": "String"
+      }
+    }
+  },
+  "wakeWordTestHeard": "听到了：{phrase}",
+  "@wakeWordTestHeard": {
+    "placeholders": {
+      "phrase": {
+        "type": "String"
+      }
+    }
+  },
+  "wakeWordTestMissed": "没听到，再试一次",
+  "wakeWordTestNeedModel": "先下载唤醒模型",
+  "wakeWordMicDenied": "没有麦克风权限，去系统设置里打开",
+  "wakeWordPresets": "常用唤醒词"
+}
