@@ -313,7 +313,12 @@ class _SherpaSpotter implements WakeWordSpotter {
             joiner: model.joiner,
           ),
           tokens: model.tokens,
-          modelType: 'zipformer',
+          // No modelType on purpose. sherpa only reads the encoder's own
+          // `model_type` metadata when this is empty, and that is how it tells
+          // a zipformer from a zipformer2. Naming one here made it skip the
+          // lookup, load this (newer) model as the older class, and then fail
+          // to find `attention_dims` in the metadata — the encoder state
+          // shapes came out wrong and nothing ever decoded.
           numThreads: 1,
           debug: false,
         ),
