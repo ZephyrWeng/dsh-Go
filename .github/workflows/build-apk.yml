@@ -25,6 +25,10 @@ on:
         description: 'versionName override (empty = app/pubspec.yaml)'
         required: false
         default: ''
+      app_id_suffix:
+        description: 'Package id suffix, e.g. .fork, to install beside the official app'
+        required: false
+        default: ''
 
 permissions:
   contents: write # the APK is also attached to a draft release below
@@ -117,6 +121,43 @@ jobs:
           echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/$NDK_VERSION" >> "$GITHUB_ENV"
           echo "ANDROID_NDK_ROOT=$ANDROID_HOME/ndk/$NDK_VERSION" >> "$GITHUB_ENV"
           grep '^Pkg.Revision' "$ANDROID_HOME/ndk/$NDK_VERSION/source.properties"
+
+      # A runner starts without a debug keystore, so every build would otherwise
+      # sign with a fresh key and the next one could not be installed over it
+      # (INSTALL_FAILED_UPDATE_INCOMPATIBLE). Cached, every build of this fork
+      # shares one identity. Replace this with a real release key before sharing
+      # the APK with anyone else: the debug key is public knowledge.
+      - name: Restore the signing identity
+        id: keystore
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.android/debug.keystore
+          key: dsh-fork-debug-keystore-v1
+
+      - name: Create the signing identity once
+        if: steps.keystore.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p "$HOME/.android"
+          keytool -genkeypair -keystore "$HOME/.android/debug.keystore" \
+            -storepass android -keypass android -alias androiddebugkey \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -dname "CN=Android Debug, O=dsh-go fork, C=CN"
+
+      - name: Save the signing identity
+        if: steps.keystore.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.android/debug.keystore
+          key: dsh-fork-debug-keystore-v1
+
+      # Installs beside the official app instead of trying to replace it: a fork
+      # signed with another key can never overwrite it, and uninstalling would
+      # take the official app's data with it.
+      - name: Install beside the official app
+        if: inputs.app_id_suffix != ''
+        run: |
+          echo "package id: io.github.ccch1mneyyy.dsh_app${{ inputs.app_id_suffix }}"
+          printf '\ndshAppIdSuffix=%s\n' "${{ inputs.app_id_suffix }}" >> app/android/gradle.properties
 
       - name: Build the APK
         run: |

@@ -49,7 +49,12 @@ android {
     }
 
     defaultConfig {
-        applicationId = "io.github.ccch1mneyyy.dsh_app"
+        // A fork signed with its own key cannot update the official app, so it
+        // installs beside it when built with -PdshAppIdSuffix=.fork (see
+        // .github/workflows/build-apk.yml). Authorities and task affinities
+        // below use ${applicationId}, so the suffix keeps them apart too.
+        applicationId = "io.github.ccch1mneyyy.dsh_app" +
+            (providers.gradleProperty("dshAppIdSuffix").orNull ?: "")
         // java.nio.file (symlinks while unpacking the rootfs) needs API 26.
         minSdk = 26
         // Target 28 like Termux, so the API 29+ exec restriction on app-private
