@@ -27,7 +27,7 @@ on:
         default: ''
 
 permissions:
-  contents: read
+  contents: write # the APK is also attached to a draft release below
 
 concurrency:
   group: build-apk-${{ github.ref }}-${{ inputs.flavor }}
@@ -141,3 +141,18 @@ jobs:
             app/build/app/outputs/flutter-apk/*.sha1
           retention-days: 14
           if-no-files-found: error
+
+      # A release asset downloads far faster than an Actions artifact for anyone
+      # behind a slow proxy. Draft, so a CI build never looks like a release.
+      - name: Attach the APK to a draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="ci-apk-${FLAVOR}-${GITHUB_RUN_NUMBER}"
+          gh release create "$tag" \
+            --draft \
+            --target "$GITHUB_SHA" \
+            --title "dsh-go ${FLAVOR} APK · run ${GITHUB_RUN_NUMBER}" \
+            --notes "Debug-signed sideload build from ${GITHUB_SHA}, produced by .github/workflows/build-apk.yml. Not an official release; the bundled runtime is included." \
+            app/build/app/outputs/flutter-apk/*.apk
+          echo "draft release: $tag"
